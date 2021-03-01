@@ -5,8 +5,14 @@ cmake_minimum_required (VERSION 3.1)
 # setup #
 #########
 
-cmake_policy( SET CMP0048 NEW ) # version in project()
-project( DL_Min_C VERSION 2.6.1 )
+cmake_policy( SET CMP0011 NEW )
+cmake_policy( SET CMP0012 NEW ) # how if-statements work
+cmake_policy( SET CMP0042 NEW ) # rpath on mac os xcmake_policy( SET CMP0048 NEW ) # version in project()
+project( DL_Min_C VERSION 0.0.0 )
+
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR} CACHE PATH "Install prefix" FORCE )
+endif()
 
 # Get the dripline version
 file( STRINGS "dripline_shield.json" JSON_STRINGS )
@@ -14,6 +20,22 @@ list( FILTER JSON_STRINGS INCLUDE REGEX "message" )
 list( GET JSON_STRINGS 0 JSON_STRING )
 string( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" DRIPLINE_PROTOCOL_VERSION ${JSON_STRING})
 message( STATUS "Dripline protocol version: ${DRIPLINE_PROTOCOL_VERSION}" )
+
+# standard install directories
+include( GNUInstallDirs )
+
+# build shared libraries
+set( BUILD_SHARED_LIBS ON )
+
+# turn on RPATH for Mac OSX
+set( CMAKE_MACOSX_RPATH ON )
+
+# add the library install directory to the rpath
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}" )
+
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+set( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE )
 
 
 ####################
